@@ -1,24 +1,22 @@
 <?php
 
-// ================== CONFIG & DEPENDENCIES ==================
-require __DIR__ . '/../config/config.php';       // Database connection
-require __DIR__ . '/../vendor/autoload.php';     // PHPMailer (Composer autoload)
+require __DIR__ . '/../config/config.php';
+require __DIR__ . '/../vendor/autoload.php'; 
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-
-// ================== SESSION + RESPONSE TYPE ==================
-session_start();                                 // Start session (needed for CSRF)
-header('Content-Type: application/json');        // Response will be JSON
+session_start();
+header('Content-Type: application/json');
 
 
-// CSRF CHECK
+// CSRF CHECK importing from ./utils folder;
+
 require __DIR__ . '/../utils/csrf.php';
 csrf_protect();
 
 
-// ================== INPUT SANITIZATION (XSS PROTECTION) ==================
+// INPUT SANITIZATION
 $name = htmlspecialchars(trim($_POST['name'] ?? ''), ENT_QUOTES, 'UTF-8');
 $email = htmlspecialchars(trim($_POST['email'] ?? ''), ENT_QUOTES, 'UTF-8');
 $message = htmlspecialchars(trim($_POST['message'] ?? ''), ENT_QUOTES, 'UTF-8');
@@ -26,7 +24,7 @@ $message = htmlspecialchars(trim($_POST['message'] ?? ''), ENT_QUOTES, 'UTF-8');
 $errors = [];
 
 
-// ================== SERVER-SIDE INPUT VALIDATION ==================
+// INPUT VALIDATIONs
 if ($name === "") {
     $errors['name'] = "Name is required";
 }
@@ -50,7 +48,7 @@ if (!empty($errors)) {
     exit;
 }
 
-// ================== FILE UPLOAD HANDLING ==================
+// FILE UPLOAD HANDLING
 $filePath = null;
 
 if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
@@ -62,7 +60,7 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
     $fileTmp  = $_FILES['file']['tmp_name'];
     $fileSize = $_FILES['file']['size'];
 
-    // ================== FILE SIZE VALIDATION ==================
+    // FILE SIZE VALIDATION
     if ($fileSize > $maxSize) {
         echo json_encode([
             'status' => 'error',
@@ -71,7 +69,7 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
         exit;
     }
 
-    // ================== FILE TYPE VALIDATION ==================
+    // FILE TYPE VALIDATION
     $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
     if (!in_array($ext, $allowed)) {
@@ -84,7 +82,7 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
 
     $uploadDir = __DIR__ . '/uploads/';
 
-    // Create folder if not exists
+    // Create folder if not exist
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
@@ -93,12 +91,11 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
 
     $filePath = $uploadDir . $newName;
 
-    // Move file from temp to uploads folder
     move_uploaded_file($fileTmp, $filePath);
 }
 
 
-// ================== DATABASE INSERT (PREPARED STATEMENT) ==================
+// DB INSERT
 $stmt = $conn->prepare("INSERT INTO contacts_info (contact_name, contact_email, contact_message, file_path) VALUES (?, ?, ?, ?)");
 
 $stmt->bind_param("ssss", $name, $email, $message, $filePath);
@@ -115,7 +112,7 @@ if (!$stmt->execute()) {
 $stmt->close();
 
 
-// ================== EMAIL SENDING (PHPMailer) ==================
+// Form Submition Email Sending
 $mailSent = false;
 
 try {
@@ -133,7 +130,7 @@ try {
     // EMAIL HEADERS
     $mail->setFrom($mail->Username, 'Contact Form');
     $mail->addAddress($mail->Username);          // Receiver
-    $mail->addReplyTo($email, $name);            // User reply
+    $mail->addReplyTo($email, $name);        
 
     // EMAIL CONTENT
     $mail->isHTML(true);
@@ -155,11 +152,9 @@ try {
     $mailSent = true;
 
 } catch (Exception $e) {
-    $mailSent = false; // Fail silently (could log error)
+    $mailSent = false;
 }
 
-
-// ================== FINAL RESPONSE ==================
 echo json_encode([
     'status'  => 'success',
     'message' => $mailSent 
