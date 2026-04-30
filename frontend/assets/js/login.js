@@ -34,7 +34,6 @@ $(document).ready(function () {
                     .addClass('alert alert-success')
                     .text(res.message);
 
-                // redirect (optional)
                 setTimeout(() => {
                     window.location.href = "index.php";
                 }, 1500);
