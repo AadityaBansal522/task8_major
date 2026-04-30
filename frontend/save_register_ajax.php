@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 session_start();
 header('Content-Type: application/json');
 
-// ===================== CSRF CHECK =====================
+// =====================This CSRF CHECK =====================
 require __DIR__ . '/../utils/csrf.php';
 csrf_protect();
 
@@ -21,7 +21,7 @@ $pass  = $_POST['password'] ?? '';
 
 $errors = [];
 
-// ===================== VALIDATION =====================
+// ===================== VALIDATIONs =====================
 if (empty($fname)) {
     $errors[] = "First name required";
 } elseif (! preg_match("/^[a-zA-Z ]+$/", $fname)) {
@@ -73,10 +73,9 @@ if ($stmt->num_rows > 0) {
 
 $stmt->close();
 
-// ===================== HASH PASSWORD =====================
 $hashedPassword = password_hash($pass, PASSWORD_BCRYPT);
 
-// ===================== INSERT USER =====================
+// =====================This INSERT USER =====================
 $stmt = $conn->prepare("INSERT INTO users_info (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
 if (! $stmt) {
     echo json_encode(['status' => 'error', 'message' => 'Database prepare failed']);
@@ -93,12 +92,12 @@ if (! $stmt->execute()) {
 $user_id = $stmt->insert_id;
 $stmt->close();
 
-// ===================== SESSION STORE =====================
+// ===================== This SESSION STORE =====================
 $_SESSION['temp_user_id']    = $user_id;
 $_SESSION['temp_otp']        = rand(100000, 999999);
 $_SESSION['temp_otp_expiry'] = time() + 300; // 5 minutes
 
-// ===================== SEND EMAIL =====================
+// ===================== This Block SENDs EMAIL =====================
 $mail = new PHPMailer(true);
 
 try {
