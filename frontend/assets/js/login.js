@@ -1,6 +1,15 @@
 $(document).ready(function () {
 
+    // INIT validation engine
+    $("#loginForm").validationEngine();
+
     $('#loginForm').submit(function (e) {
+
+        if (!$("#loginForm").validationEngine('validate')) {
+            e.preventDefault();
+            return false;
+        }
+
         e.preventDefault();
 
         let email = $('#email').val().trim();
@@ -12,6 +21,7 @@ $(document).ready(function () {
         $('.invalid-feedback').text('');
         $('#success').addClass('d-none').text('');
 
+        // ✅ KEEP EXISTING VALIDATION
         if (email === '') {
             $('#email').addClass('is-invalid');
             $('#emailError').text('Email required');

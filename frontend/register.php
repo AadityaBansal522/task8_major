@@ -49,30 +49,32 @@
                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                     <div class="mb-3">
-                        <input type="text" name="first_name" id="first_name" class="form-control"
+                        <input type="text" name="first_name" id="first_name" class="form-control validate[required]"
                             placeholder="First Name">
                         <div class="invalid-feedback" id="fnameError"></div>
                     </div>
 
                     <div class="mb-3">
-                        <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Last Name">
+                        <input type="text" name="last_name" id="last_name" class="form-control validate[required]"
+                            placeholder="Last Name">
                         <div class="invalid-feedback" id="lnameError"></div>
                     </div>
 
                     <div class="mb-3">
-                        <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+                        <input type="text" name="email" id="email" class="form-control validate[required,custom[email]]"
+                            placeholder="Email">
                         <div class="invalid-feedback" id="emailError"></div>
                     </div>
 
                     <div class="mb-3">
-                        <input type="password" name="password" id="password" class="form-control"
-                            placeholder="Password">
+                        <input type="password" name="password" id="password"
+                            class="form-control validate[required,minSize[6]]" placeholder="Password">
                         <div class="invalid-feedback" id="passError"></div>
                     </div>
 
                     <div class="mb-3">
-                        <input type="password" id="confirm_password" class="form-control"
-                            placeholder="Confirm Password">
+                        <input type="password" id="confirm_password"
+                            class="form-control validate[required,equals[password]]" placeholder="Confirm Password">
                         <div class="invalid-feedback" id="cpassError"></div>
                     </div>
 
@@ -83,7 +85,7 @@
     </div>
 
     <?php include 'includes/footer.php'; ?>
-    
+
     <script src="assets/js/register.js"></script>
 
 </body>

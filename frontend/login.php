@@ -9,6 +9,7 @@ if (empty($_SESSION['csrf_token'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -17,32 +18,35 @@ if (empty($_SESSION['csrf_token'])) {
 
 <body>
 
-<?php include 'includes/header.php'; ?>
+    <?php include 'includes/header.php'; ?>
 
-<div class="container py-5">
-    <h3>Login</h3>
+    <div class="container py-5">
+        <h3>Login</h3>
 
-    <div id="success" class="alert d-none"></div>
+        <div id="success" class="alert d-none"></div>
 
-    <form id="loginForm">
+        <form id="loginForm">
 
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
 
-        <div class="mb-3">
-            <input type="email" name="email" id="email" class="form-control" placeholder="Email">
-            <div class="invalid-feedback" id="emailError"></div>
-        </div>
+            <div class="mb-3">
+                <input type="text" name="email" id="email" class="form-control validate[required,custom[email]]"
+                    placeholder="Email">
+                <div class="invalid-feedback" id="emailError"></div>
+            </div>
 
-        <div class="mb-3">
-            <input type="password" name="password" id="password" class="form-control" placeholder="Password">
-            <div class="invalid-feedback" id="passError"></div>
-        </div>
+            <div class="mb-3">
+                <input type="password" name="password" id="password" class="form-control validate[required]"
+                    placeholder="Password">
+                <div class="invalid-feedback" id="passError"></div>
+            </div>
 
-        <button class="btn btn-primary">Login</button>
-    </form>
-</div>
+            <button class="btn btn-primary">Login</button>
+        </form>
+    </div>
 
-<script src="assets/js/login.js"></script>
+    <script src="assets/js/login.js"></script>
 
 </body>
+
 </html>

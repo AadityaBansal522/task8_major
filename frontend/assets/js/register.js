@@ -1,6 +1,15 @@
 $(document).ready(function () {
 
+    // INIT validation engine
+    $("#registerForm").validationEngine();
+
     $('#registerForm').submit(function (e) {
+
+        if (!$("#registerForm").validationEngine('validate')) {
+            e.preventDefault();
+            return false;
+        }
+
         e.preventDefault();
 
         let formData = $(this).serialize();
@@ -16,6 +25,7 @@ $(document).ready(function () {
         let pass = $('#password').val();
         let cpass = $('#confirm_password').val();
 
+        // ✅ KEEP EXISTING VALIDATION (unchanged)
         if (fname === '') {
             $('#first_name').addClass('is-invalid');
             $('#fnameError').text('First name required');
