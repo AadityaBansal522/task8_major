@@ -1,10 +1,10 @@
 <?php
-session_start();
+    session_start();
 
-// CSRF TOKEN
-if (empty($_SESSION['csrf_token'])) {
+    // CSRF TOKEN
+    if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
+    }
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +27,7 @@ if (empty($_SESSION['csrf_token'])) {
 
         <form id="loginForm">
 
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
             <div class="mb-3">
                 <input type="text" name="email" id="email" class="form-control validate[required,custom[email]]"
